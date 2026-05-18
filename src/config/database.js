@@ -1,20 +1,28 @@
-const mariadb = require('mariadb');
 require('dotenv').config();
 
-const pool = mariadb.createPool({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  connectionLimit: 5,
-  acquireTimeout: 10000
-});
+let pool;
+
+async function getPool() {
+  if (!pool) {
+    const mariadb = await import('mariadb');
+    pool = mariadb.createPool({
+      host: process.env.DB_HOST,
+      port: process.env.DB_PORT,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      connectionLimit: 5,
+      acquireTimeout: 10000
+    });
+  }
+  return pool;
+}
 
 async function getConnection() {
+  const p = await getPool();
   let conn;
   try {
-    conn = await pool.getConnection();
+    conn = await p.getConnection();
     return conn;
   } catch (err) {
     console.error('Error getting connection:', err);
@@ -67,4 +75,4 @@ async function initDatabase() {
   }
 }
 
-module.exports = { pool, getConnection, initDatabase };
+module.exports = { getPool, getConnection, initDatabase };

@@ -1,14 +1,14 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const { getConnection } = require('../config/database');
 const { logAction } = require('../middleware/logger');
-const { v4: uuidv4 } = require('uuid');
 
 async function registerUser(req, res) {
   const { first_name, last_name, email, phone, role, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const activationToken = uuidv4();
+    const activationToken = crypto.randomUUID();
 
     const conn = await getConnection();
     const result = await conn.query(
@@ -17,10 +17,11 @@ async function registerUser(req, res) {
       [first_name, last_name, email, phone, role || 'client', hashedPassword, activationToken]
     );
     conn.release();
+    const userId = Number(result.insertId);
 
-    await logAction('users', null, `Usuario registrado: ${email}`, { userId: result.insertId });
+    await logAction('users', null, `Usuario registrado: ${email}`, { userId });
 
-    res.status(201).json({ message: 'User registered successfully', userId: result.insertId });
+    res.status(201).json({ message: 'User registered successfully', userId });
   } catch (err) {
     if (err.code === 'ER_DUP_ENTRY') {
       return res.status(400).json({ error: 'Email already exists' });

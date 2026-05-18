@@ -1,6 +1,6 @@
 const Order = require('../models/Order');
 const { logAction } = require('../middleware/logger');
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 
 async function getAllOrders(req, res) {
   try {
@@ -29,7 +29,7 @@ async function createOrder(req, res) {
   const { products, payment_type, seller, client, total } = req.body;
   try {
     const order = new Order({
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       products,
       payment_type,
       seller,

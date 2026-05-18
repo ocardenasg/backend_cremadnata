@@ -1,5 +1,5 @@
 const Log = require('../models/Log');
-const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 
 let isAtlasConnected = false;
 
@@ -15,7 +15,7 @@ async function logOperation(service, userId, description = '', tags = {}) {
 
   try {
     const logEntry = new Log({
-      id: uuidv4(),
+      id: crypto.randomUUID(),
       service,
       user_id: userId || 'system',
       description,
