@@ -11,6 +11,10 @@ API RESTful para la gestión de la pastelería "Creme della Nata".
 - [Configuración](#configuración)
 - [Variables de Entorno](#variables-de-entorno)
 - [Docker Compose](#docker-compose)
+- [Despliegue con Docker](#despliegue-con-docker)
+  - [Desarrollo (con auto-reload)](#desarrollo-con-auto-reload)
+  - [Producción](#producción)
+  - [Construir imágenes](#construir-imágenes)
 - [Ejecutar el Proyecto](#ejecutar-el-proyecto)
 - [Endpoints API](#endpoints-api)
 - [Ejemplos de Uso](#ejemplos-de-uso)
@@ -368,6 +372,83 @@ await logAction('products', userId, 'Producto creado', { productId: id });
 - Registro de usuarios
 - Inicio de sesión
 - Creación/actualización/eliminación de órdenes
+
+---
+
+## Despliegue con Docker
+
+El proyecto incluye Dockerfiles para desarrollo y producción.
+
+### Archivos Docker
+
+| Archivo | Propósito |
+|---------|------------|
+| `Dockerfile` | Imagen de producción (node:18-alpine) |
+| `Dockerfile.dev` | Imagen de desarrollo con nodemon |
+
+### Servicios en Docker Compose
+
+| Servicio | Puerto | Descripción |
+|----------|--------|-------------|
+| `mariadb` | 3306 | Base de datos MariaDB |
+| `mongodb` | 27018 | Base de datos MongoDB (órdenes) |
+| `app-dev` | 3000 | Aplicación en modo desarrollo |
+| `app-prod` | 3001 | Aplicación en modo producción |
+
+#### Desarrollo (con auto-reload)
+
+Inicia la aplicación en modo desarrollo con auto-reload:
+
+```bash
+docker-compose up app-dev
+```
+
+Características:
+- Monta el código fuente (`./src`) para cambios en vivo
+- Usa nodemon para auto-reload
+- Puerto: 3000
+
+#### Producción
+
+Inicia la aplicación en modo producción:
+
+```bash
+docker-compose up app-prod
+```
+
+Características:
+- Imagen optimizada de producción
+- Solo dependencias de producción
+- Puerto: 3001
+
+#### Construir imágenes
+
+```bash
+# Desarrollo
+docker-compose build app-dev
+
+# Producción
+docker-compose build app-prod
+```
+
+#### Comandos útiles
+
+```bash
+# Iniciar todos los servicios (desarrollo)
+docker-compose up
+
+# Iniciar todos los servicios en background
+docker-compose up -d
+
+# Ver logs de un servicio específico
+docker-compose logs -f app-dev
+
+# Detener todos los servicios
+docker-compose down
+
+# Reconstruir imágenes
+docker-compose build --no-cache
+```
 
 ---
 
