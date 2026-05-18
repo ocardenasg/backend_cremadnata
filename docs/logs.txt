@@ -1,0 +1,6 @@
+id: identificador de la orden en format uuid
+service: nombre del endopoint que se está ejecutando
+date: fecha completa del log en horario de México central
+user_id: id del usuario que está ejecutando el método
+description: texto no requerido para más información 
+tags: objeto de JS con información variable y complentaria

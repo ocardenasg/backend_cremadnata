@@ -1,0 +1,28 @@
+services:
+  mariadb:
+    image: mariadb:10.11
+    container_name: cremadnata_mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: cremadnata
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data/mariadb:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:7
+    container_name: cremadnata_mongodb
+    restart: unless-stopped
+    ports:
+      - "27018:27017"
+    volumes:
+      - ./data/mongodb:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: orders_db

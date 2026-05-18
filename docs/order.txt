@@ -1,0 +1,21 @@
+id: identificador de la orden en format uuid
+products: listado de objetos por cada producto donde cada objeto debe tener
+  id: identificador del producto
+  name: nombre de producto
+  quantity: cantidad de productos vendida
+  unit_price: costo unitario del producto
+  total_price: costo de los productos vendidos (quantity * unit_price)
+payment_type: tipo de pago, 3 opciones
+  - cash: monto del pago que se dio en efectivo (por defecto es efectivo)
+  - transfer: si el pago fue con transferencia
+  - mixed: si el pago se efectuó en efectivo + transferencia
+seller: información de la vendedora
+  - id: identidicador del vendedor
+  - name: nombre del vendedor
+client: datos del cliente que realizó la orden
+  - id: identificador del cliente
+  - name: nombre del cliente
+  - email: email de cliente
+  - whatsapp: numero de whatsapp del cliente
+total: total de la orden (total de los productos vendidos)
+created_at: fecha completa de la creación de la orden de compra en el horario de Mexico central

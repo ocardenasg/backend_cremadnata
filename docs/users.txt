@@ -1,0 +1,11 @@
+id: int unsigned
+first_name: varchar(50)  
+last_name: varchar(50)  
+email: varchar(100) 
+phone: varchar(20)  
+is_active: tinyint(1)   
+role: varchar(20)  
+password: varchar(255) 
+activation_token: varchar(64)
+created_at: timestamp
+updated_at: timestamp

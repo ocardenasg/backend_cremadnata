@@ -1,0 +1,12 @@
+id: varchar(10)
+name: varchar(255)
+description: text
+price: decimal(10,2)
+cost: decimal(10,2)
+category: varchar(50)
+size: varchar(50)
+image: varchar(500)
+stock: decimal(10,2)
+provider: varchar(50)
+created_at: timestamp
+updated_at: timestamp

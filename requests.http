@@ -1,0 +1,244 @@
+@baseUrl = http://localhost:3000/api
+@token = <YOUR_JWT_TOKEN>
+
+###############################################################################
+# HEALTH CHECK
+###############################################################################
+
+GET {{baseUrl}}/../health
+
+###############################################################################
+# USERS - Registro e Inicio de Sesión (No requiere auth)
+###############################################################################
+
+# Registrar nuevo usuario
+POST {{baseUrl}}/users/register
+Content-Type: application/json
+
+{
+  "first_name": "Juan",
+  "last_name": "Pérez",
+  "email": "juan@email.com",
+  "phone": "1234567890",
+  "password": "password123",
+  "role": "client"
+}
+
+# Iniciar sesión
+POST {{baseUrl}}/users/login
+Content-Type: application/json
+
+{
+  "email": "juan@email.com",
+  "password": "password123"
+}
+
+###############################################################################
+# PRODUCTS (Requiere auth: admin, seller)
+###############################################################################
+
+# Listar todos los productos
+GET {{baseUrl}}/products
+
+# Obtener producto por ID
+GET {{baseUrl}}/products/PROD001
+
+# Crear producto
+POST {{baseUrl}}/products
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": "PROD001",
+  "name": "Pastel de Chocolate",
+  "description": "Delicioso pastel de chocolate con cobertura de crema",
+  "price": 250.00,
+  "cost": 150.00,
+  "category": "pasteles",
+  "size": "mediano",
+  "image": "https://example.com/images/pastel-chocolate.jpg",
+  "stock": 10,
+  "provider": "Proveedor A"
+}
+
+# Actualizar producto
+PUT {{baseUrl}}/products/PROD001
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Pastel de Chocolate Premium",
+  "description": "Delicioso pastel de chocolate con cobertura de crema y fresas",
+  "price": 280.00,
+  "cost": 160.00,
+  "category": "pasteles",
+  "size": "mediano",
+  "stock": 15,
+  "provider": "Proveedor A"
+}
+
+# Eliminar producto
+DELETE {{baseUrl}}/products/PROD001
+Authorization: Bearer {{token}}
+
+###############################################################################
+# USERS - Gestión (Requiere auth: admin)
+###############################################################################
+
+# Listar todos los usuarios
+GET {{baseUrl}}/users
+Authorization: Bearer {{token}}
+
+# Obtener usuario por ID
+GET {{baseUrl}}/users/1
+Authorization: Bearer {{token}}
+
+# Actualizar usuario
+PUT {{baseUrl}}/users/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "first_name": "Juan Actualizado",
+  "last_name": "Pérez",
+  "email": "juan@email.com",
+  "phone": "9876543210",
+  "is_active": 1,
+  "role": "admin"
+}
+
+# Eliminar usuario
+DELETE {{baseUrl}}/users/1
+Authorization: Bearer {{token}}
+
+###############################################################################
+# ORDERS (Requiere auth: admin, seller)
+###############################################################################
+
+# Listar todas las órdenes
+GET {{baseUrl}}/orders
+Authorization: Bearer {{token}}
+
+# Obtener orden por ID
+GET {{baseUrl}}/orders/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
+
+# Crear orden
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "products": [
+    {
+      "id": "PROD001",
+      "name": "Pastel de Chocolate",
+      "quantity": 2,
+      "unit_price": 250.00,
+      "total_price": 500.00
+    },
+    {
+      "id": "PROD002",
+      "name": "Cupcakes de Vainilla",
+      "quantity": 6,
+      "unit_price": 25.00,
+      "total_price": 150.00
+    }
+  ],
+  "payment_type": {
+    "type": "mixed",
+    "cash_amount": 300.00,
+    "transfer_reference": "TXN123456789"
+  },
+  "seller": {
+    "id": "2",
+    "name": "Maria García"
+  },
+  "client": {
+    "id": "1",
+    "name": "Juan Pérez",
+    "email": "juan@email.com",
+    "whatsapp": "1234567890"
+  },
+  "total": 650.00
+}
+
+# Crear orden (pago en efectivo)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "products": [
+    {
+      "id": "PROD001",
+      "name": "Pastel de Chocolate",
+      "quantity": 1,
+      "unit_price": 250.00,
+      "total_price": 250.00
+    }
+  ],
+  "payment_type": {
+    "type": "cash",
+    "cash_amount": 300.00
+  },
+  "seller": {
+    "id": "2",
+    "name": "Maria García"
+  },
+  "client": {
+    "id": "1",
+    "name": "Ana López",
+    "email": "ana@email.com",
+    "whatsapp": "9876543210"
+  },
+  "total": 250.00
+}
+
+# Crear orden (transferencia)
+POST {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "products": [
+    {
+      "id": "PROD003",
+      "name": "Galletas de Chocolate",
+      "quantity": 20,
+      "unit_price": 10.00,
+      "total_price": 200.00
+    }
+  ],
+  "payment_type": {
+    "type": "transfer",
+    "transfer_reference": "TRANSFER123"
+  },
+  "seller": {
+    "id": "2",
+    "name": "Maria García"
+  },
+  "client": {
+    "id": "3",
+    "name": "Carlos Ruiz",
+    "email": "carlos@email.com",
+    "whatsapp": "5551234567"
+  },
+  "total": 200.00
+}
+
+# Actualizar orden
+PUT {{baseUrl}}/orders/550e8400-e29b-41d4-a716-446655440000
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "payment_type": {
+    "type": "transfer",
+    "transfer_reference": "UPDATED_TRANSFER"
+  }
+}
+
+# Eliminar orden
+DELETE {{baseUrl}}/orders/550e8400-e29b-41d4-a716-446655440000
+Authorization: Bearer {{token}}
